@@ -2,17 +2,14 @@
 
 const send = (sockio, m, sm, user) => {
   if (m && user) {
-    fetch(`http://localhost:3000/api/chat/send`, {
+    const url = `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/chat/sendMessage`;
+    console.log(url);
+    fetch(url, {
       method: "POST",
       body: JSON.stringify({ user, message: m }),
-    }).then((res) => {
-      if (res.ok) {
-        sm("");
-        sockio.emit("message");
-      } else {
-        console.log("Failed to send message");
-      }
     });
+    sm("");
+    sockio.emit("message");
   }
 };
 

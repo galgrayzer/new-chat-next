@@ -13,15 +13,18 @@ export default function ChatBox() {
   const user = IsAuth();
   const [message, setMessage] = useState("");
   const [messagesList, setMessagesList] = useState([]);
-  const [socket, setSocket] = useState(io("http://localhost:3001"));
+  const [socket, setSocket] = useState(
+    io(`${process.env.NEXT_PUBLIC_SOCKETIO}`)
+  );
   const { data: session } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/chat/get");
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/chat/get`
+        );
         const data = await response.json();
         setMessagesList(data);
       } catch (error) {
@@ -32,6 +35,10 @@ export default function ChatBox() {
     fetchData();
 
     socket.on("message", (msg) => {
+      fetchData();
+    });
+
+    socket.on("delete", () => {
       fetchData();
     });
 
@@ -48,8 +55,9 @@ export default function ChatBox() {
       {messagesList.map((m) => (
         <Message
           session={session}
+          sockio={socket}
           key={m.id}
-          message={m.message}
+          message={m}
           user={{ name: m.name, image: m.image, email: m.email }}
         />
       ))}

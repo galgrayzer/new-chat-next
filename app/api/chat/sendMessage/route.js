@@ -4,7 +4,7 @@ import PocketBase from "pocketbase";
 
 const pb = new PocketBase("http://127.0.0.1:8090");
 
-export const POST = async (req) => {
+export async function POST(req) {
   const { user, message } = await req.json();
   if (user && message) {
     const data = {
@@ -15,13 +15,15 @@ export const POST = async (req) => {
     };
     const record = await pb.collection("messeges").create(data);
     if (record) {
-      return NextResponse.redirect("http:localhost:3000/chat");
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/chat`
+      );
     } else {
       return NextResponse.error("Failed to send message");
     }
   }
-};
+}
 
-export const GET = async (req, res) => {
+export async function GET(req) {
   redirect("/404");
-};
+}

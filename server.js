@@ -13,6 +13,10 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("message", msg);
     socket.emit("message", msg);
   });
+  socket.on("delete", (id) => {
+    socket.broadcast.emit("delete", id);
+    socket.emit("delete", id);
+  });
 });
 
 server.listen(3001, () => {
